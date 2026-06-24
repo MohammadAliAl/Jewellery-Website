@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxorer — Fine Jewellery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  :root{
+    --ink:#0e0d0c;
+    --panel:#17140f;
+    --ivory:#f6efe2;
+    --gold:#c9a24b;
+    --gold-soft:#9c8253;
+    --hair:rgba(201,162,75,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--ivory);
+    font-family:'Jost', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  .eyebrow{
+    font-family:'Jost',sans-serif;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    color:var(--gold);
+    font-weight:500;
+  }
+
+  h1,h2,h3{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    letter-spacing:0.01em;
+  }
+
+  /* ---------- Chain motif: a thin gold line that runs the spine of the page ---------- */
+  .chain-track{
+    position:absolute;
+    top:0; left:50%;
+    width:1px;
+    height:100%;
+    background:linear-gradient(to bottom, transparent, var(--hair) 8%, var(--hair) 92%, transparent);
+    transform:translateX(-50%);
+    z-index:0;
+  }
+  .chain-link{
+    position:absolute;
+    left:50%;
+    width:9px;height:9px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    background:var(--ink);
+    transform:translateX(-50%);
+    z-index:1;
+  }
+
+  /* ---------- Nav ---------- */
+  header{
+    position:fixed;
+    top:0; left:0; right:0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 6vw;
+    z-index:50;
+    background:rgba(14,13,12,0);
+    border-bottom:1px solid rgba(201,162,75,0);
+    backdrop-filter:blur(0px);
+    transition:background .5s ease, border-color .5s ease, backdrop-filter .5s ease, padding .4s ease;
+  }
+  header.scrolled{
+    background:rgba(14,13,12,0.72);
+    border-bottom:1px solid var(--hair);
+    backdrop-filter:blur(14px);
+    padding:16px 6vw;
+  }
+  .wordmark{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.4rem;
+    letter-spacing:0.18em;
+    color:var(--ivory);
+  }
+  .wordmark .mark{
+    width:7px; height:7px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    transform:rotate(45deg);
+    flex-shrink:0;
+  }
+  nav ul{
+    display:flex;
+    gap:40px;
+    list-style:none;
+  }
+  nav li{ position:relative; }
+  nav a{
+    position:relative;
+    font-size:0.76rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ivory);
+    opacity:0.78;
+    padding-bottom:6px;
+    transition:opacity .3s, color .3s;
+  }
+  nav a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:0;
+    width:100%; height:1px;
+    background:var(--gold);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .4s cubic-bezier(.4,0,.2,1);
+  }
+  nav a:hover{ opacity:1; color:var(--gold); }
+  nav a:hover::after{ transform:scaleX(1); }
+  nav a:focus-visible{
+    outline:1px solid var(--gold);
+    outline-offset:4px;
+  }
+  .nav-cta{
+    border:1px solid var(--gold-soft);
+    padding:9px 20px !important;
+    border-radius:1px;
+  }
+  .nav-cta::after{ display:none; }
+  .nav-cta:hover{
+    background:var(--gold);
+    color:var(--ink) !important;
+    border-color:var(--gold);
+  }
+  .nav-toggle{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:6px;
+    z-index:60;
+  }
+  .nav-toggle span{
+    width:24px; height:1px;
+    background:var(--ivory);
+    transition:transform .3s, opacity .3s;
+  }
+  @media (max-width:720px){
+    nav ul{
+      position:fixed;
+      top:0; right:0;
+      height:100vh;
+      width:min(78vw, 320px);
+      background:rgba(14,13,12,0.98);
+      backdrop-filter:blur(16px);
+      border-left:1px solid var(--hair);
+      flex-direction:column;
+      justify-content:center;
+      align-items:flex-start;
+      gap:30px;
+      padding:0 48px;
+      transform:translateX(100%);
+      transition:transform .45s cubic-bezier(.4,0,.2,1);
+    }
+    nav ul.open{ transform:translateX(0); }
+    .nav-toggle{ display:flex; }
+    .nav-toggle.open span:nth-child(1){ transform:translateY(6px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2){ opacity:0; }
+    .nav-toggle.open span:nth-child(3){ transform:translateY(-6px) rotate(-45deg); }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:0 6vw;
+    isolation:isolate;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 38%, rgba(201,162,75,0.10), transparent 70%),
+      linear-gradient(180deg, rgba(14,13,12,0.55), rgba(14,13,12,0.92) 75%, var(--ink) 100%),
+      url('https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1800&auto=format&fit=crop') center 30%/cover no-repeat;
+    z-index:-1;
+  }
+  .hero .eyebrow{margin-bottom:22px; opacity:0; animation:rise .9s .2s forwards ease-out;}
+  .hero h1{
+    font-size:clamp(3.4rem, 11vw, 8.5rem);
+    line-height:0.92;
+    color:var(--ivory);
+    opacity:0; animation:rise 1s .35s forwards ease-out;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--gold);
+  }
+  .hero p.tag{
+    margin-top:26px;
+    max-width:480px;
+    font-size:1rem;
+    line-height:1.7;
+    color:var(--gold-soft);
+    opacity:0; animation:rise 1s .55s forwards ease-out;
+  }
+  .hero .cta-row{
+    margin-top:46px;
+    display:flex;
+    gap:18px;
+    opacity:0; animation:rise 1s .7s forwards ease-out;
+  }
+  .btn{
+    padding:15px 34px;
+    font-size:0.78rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    border:1px solid var(--gold);
+    transition:all .35s ease;
+  }
+  .btn.solid{
+    background:var(--gold);
+    color:var(--ink);
+  }
+  .btn.solid:hover{ background:transparent; color:var(--gold); }
+  .btn.ghost{ color:var(--ivory); border-color:rgba(246,239,226,0.3); }
+  .btn.ghost:hover{ border-color:var(--gold); color:var(--gold); }
+
+  @keyframes rise{
+    from{opacity:0; transform:translateY(18px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .scroll-cue{
+    position:absolute;
+    bottom:36px; left:50%;
+    transform:translateX(-50%);
+    width:1px; height:54px;
+    background:linear-gradient(to bottom, var(--gold), transparent);
+    animation:pulseLine 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseLine{
+    0%,100%{opacity:0.3;}
+    50%{opacity:1;}
+  }
+
+  /* ---------- Section shells ---------- */
+  section{
+    position:relative;
+    padding:140px 6vw;
+    z-index:1;
+  }
+  .section-head{
+    text-align:center;
+    max-width:600px;
+    margin:0 auto 70px;
+  }
+  .section-head h2{
+    font-size:clamp(2.2rem, 4vw, 3.2rem);
+    margin-top:16px;
+    color:var(--ivory);
+  }
+  .section-head p{
+    margin-top:18px;
+    color:var(--gold-soft);
+    font-size:0.95rem;
+    line-height:1.7;
+  }
+
+  /* ---------- Collections ---------- */
+  .collections{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--hair);
+    max-width:1200px;
+    margin:0 auto;
+  }
+  .piece{
+    background:var(--ink);
+    padding:54px 38px;
+    text-align:center;
+    transition:background .4s ease;
+  }
+  .piece:hover{ background:var(--panel); }
+  .piece .frame{
+    width:100%; height:280px;
+    margin:0 auto 26px;
+    border-radius:4px;
+    border:1px solid var(--hair);
+    overflow:hidden;
+    transition:border-color .4s ease;
+  }
+  .piece .frame img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+    filter:saturate(0.92) brightness(0.95);
+    transition:transform .6s ease, filter .4s ease;
+  }
+  .piece:hover .frame img{ transform:scale(1.05); filter:saturate(1.05) brightness(1); }
+  .piece:hover .frame{ border-color:var(--gold); }
+  .piece h3{
+    font-size:1.5rem;
+    color:var(--ivory);
+    margin-bottom:10px;
+  }
+  .piece p{
+    font-size:0.85rem;
+    line-height:1.65;
+    color:var(--gold-soft);
+    margin-bottom:18px;
+  }
+  .piece .price{
+    font-family:'Jost',sans-serif;
+    font-size:0.78rem;
+    letter-spacing:0.1em;
+    color:var(--gold);
+  }
+  @media (max-width:880px){
+    .collections{grid-template-columns:1fr;}
+  }
+
+  /* ---------- Atelier / story ---------- */
+  .atelier{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:80px;
+    align-items:center;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .atelier .visual{
+    aspect-ratio:4/5;
+    background:
+      linear-gradient(160deg, rgba(23,20,15,0.35), rgba(14,13,12,0.75) 75%),
+      url('https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+    border:1px solid var(--hair);
+    position:relative;
+    overflow:hidden;
+  }
+  .atelier .visual::after{
+    content:"";
+    position:absolute;
+    width:220%; height:1px;
+    background:var(--gold);
+    opacity:0.4;
+    top:32%; left:-60%;
+    transform:rotate(-22deg);
+  }
+  .atelier .visual::before{
+    content:"";
+    position:absolute;
+    width:55%;height:55%;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    opacity:0.5;
+  }
+  .atelier .copy .eyebrow{margin-bottom:18px;}
+  .atelier .copy h2{
+    font-size:clamp(2rem,3.6vw,2.8rem);
+    color:var(--ivory);
+    margin-bottom:24px;
+  }
+  .atelier .copy p{
+    color:var(--gold-soft);
+    line-height:1.85;
+    font-size:0.98rem;
+    margin-bottom:18px;
+  }
+  .stat-row{
+    display:flex;
+    gap:48px;
+    margin-top:38px;
+  }
+  .stat-row div h3{
+    font-size:2.1rem;
+    color:var(--gold);
+  }
+  .stat-row div span{
+    display:block;
+    font-size:0.74rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ivory);
+    opacity:0.6;
+    margin-top:6px;
+  }
+  @media (max-width:880px){
+    .atelier{grid-template-columns:1fr; gap:48px;}
+  }
+
+  /* ---------- Promise strip ---------- */
+  .promise{
+    border-top:1px solid var(--hair);
+    border-bottom:1px solid var(--hair);
+    padding:70px 6vw;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    max-width:1200px;
+    margin:0 auto;
+    gap:40px;
+  }
+  .promise div{ text-align:center; }
+  .promise h4{
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.2rem;
+    color:var(--ivory);
+    margin-bottom:8px;
+  }
+  .promise p{
+    font-size:0.82rem;
+    color:var(--gold-soft);
+    line-height:1.6;
+  }
+  @media (max-width:880px){ .promise{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .promise{grid-template-columns:1fr;} }
+
+  /* ---------- Closing CTA ---------- */
+  .closing{
+    text-align:center;
+    padding:160px 6vw 200px;
+  }
+  .closing h2{
+    font-size:clamp(2.6rem,6vw,4.6rem);
+    color:var(--ivory);
+    line-height:1.05;
+  }
+  .closing h2 em{ color:var(--gold); font-style:italic; }
+  .closing p{
+    margin:24px auto 44px;
+    max-width:440px;
+    color:var(--gold-soft);
+    font-size:0.95rem;
+    line-height:1.7;
+  }
+
+  footer{
+    border-top:1px solid var(--hair);
+    padding:48px 6vw;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:0.78rem;
+    color:var(--gold-soft);
+    letter-spacing:0.04em;
+    flex-wrap:wrap;
+    gap:20px;
+  }
+  footer .wordmark{ font-size:1rem; color:var(--ivory); }
+  footer ul{ display:flex; gap:26px; list-style:none; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="wordmark"><span class="mark"></span>LUXORER</div>
+  <nav>
+    <ul id="navList">
+      <li><a href="#collections">Collections</a></li>
+      <li><a href="#atelier">Atelier</a></li>
+      <li><a href="#promise">Assurance</a></li>
+      <li><a href="#contact" class="nav-cta">Book a Visit</a></li>
+    </ul>
+  </nav>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main style="position:relative;">
+  <div class="chain-track"></div>
+
+  <section class="hero">
+    <div class="eyebrow">Fine Jewellery House — Est. New Delhi</div>
+    <h1>Wear what<br><em>outlasts</em> the moment</h1>
+    <p class="tag">Each Luxorer piece is set by hand in 18K gold and conflict-free stone, built to be inherited — not just worn.</p>
+    <div class="cta-row">
+      <a href="#collections" class="btn solid">View Collections</a>
+      <a href="#contact" class="btn ghost">Book a Private Viewing</a>
+    </div>
+    <div class="scroll-cue"></div>
+  </section>
+
+  <section id="collections">
+    <div class="chain-link" style="top:0;"></div>
+    <div class="section-head">
+      <div class="eyebrow">Signature Lines</div>
+      <h2>Three ways to mark a moment</h2>
+      <p>Every collection is named for what it's made to witness — not just what it's made of.</p>
+    </div>
+    <div class="collections">
+      <div class="piece">
+        <div class="frame"><img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=900&auto=format&fit=crop" alt="Gold solitaire ring" loading="lazy"></div>
+        <h3>The Vow</h3>
+        <p>Solitaire rings, hand-set in 18K gold. For the promise that doesn't get repeated twice.</p>
+        <div class="price">From ₹1,85,000</div>
+      </div>
+      <div class="piece">
+        <div class="frame"><img src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?q=80&w=900&auto=format&fit=crop" alt="Layered gold necklaces" loading="lazy"></div>
+        <h3>The Lineage</h3>
+        <p>Layered necklaces designed to be added to over generations, not replaced.</p>
+        <div class="price">From ₹95,000</div>
+      </div>
+      <div class="piece">
+        <div class="frame"><img src="https://images.unsplash.com/photo-1535632787350-4e68ef0ac584?q=80&w=900&auto=format&fit=crop" alt="Minimal gold stud earrings" loading="lazy"></div>
+        <h3>The Quiet Hour</h3>
+        <p>Minimal studs and bands for every day that doesn't need an occasion.</p>
+        <div class="price">From ₹42,000</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="atelier">
+    <div class="chain-link" style="top:0;"></div>
+    <div class="atelier">
+      <div class="visual"></div>
+      <div class="copy">
+        <div class="eyebrow">The Atelier</div>
+        <h2>Set by hand, not by machine</h2>
+        <p>Behind every Luxorer piece is a single goldsmith who carries it from sketch to setting. No piece passes through more than one pair of hands.</p>
+        <p>We work only in 18K gold and lab-verified, conflict-free stones — and we tell you exactly where both came from.</p>
+        <div class="stat-row">
+          <div><h3>1</h3><span>Goldsmith per piece</span></div>
+          <div><h3>18K</h3><span>Gold, always</span></div>
+          <div><h3>∞</h3><span>Lifetime resizing</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="promise" style="padding-top:0;">
+    <div class="chain-link" style="top:0;"></div>
+    <div class="promise">
+      <div>
+        <h4>Hallmarked</h4>
+        <p>Every piece BIS hallmarked for gold purity, no exceptions.</p>
+      </div>
+      <div>
+        <h4>Lifetime Care</h4>
+        <p>Free resizing, polishing and repair for as long as you own it.</p>
+      </div>
+      <div>
+        <h4>Certified Stones</h4>
+        <p>Each stone ships with its own grading certificate.</p>
+      </div>
+      <div>
+        <h4>Buy-Back Value</h4>
+        <p>Trade in toward your next piece at fair market gold rate.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing" id="contact">
+    <div class="chain-link" style="top:0;"></div>
+    <div class="eyebrow">Private Appointments — New Delhi</div>
+    <h2>Some pieces<br>shouldn't be <em>scrolled</em> past</h2>
+    <p>Come hold it before you decide. Our atelier in New Delhi is open by appointment, Tuesday to Sunday.</p>
+    <a href="mailto:atelier@luxorer.com" class="btn solid">Book a Private Viewing</a>
+  </section>
+</main>
+
+<footer>
+  <div class="wordmark">LUXORER</div>
+  <ul>
+    <li><a href="#collections">Collections</a></li>
+    <li><a href="#atelier">Atelier</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div>&copy; 2026 Luxorer Fine Jewellery, New Delhi</div>
+</footer>
+
+<script>
+  const header = document.getElementById('siteHeader');
+  const toggle = document.getElementById('navToggle');
+  const navList = document.getElementById('navList');
+
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  toggle.addEventListener('click', () => {
+    const isOpen = navList.classList.toggle('open');
+    toggle.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', isOpen);
+  });
+
+  navList.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navList.classList.remove('open');
+      toggle.classList.remove('open');
+      toggle.setAttribute('aria-expanded', false);
+    });
+  });
+</script>
+
+</body>
+</html>
