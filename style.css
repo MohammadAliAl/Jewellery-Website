@@ -61,7 +61,7 @@
    Works on .btn, .nav-cta — no markup change needed, just
    make sure the element has position:relative + overflow:hidden
    (added here automatically via this rule). */
-.btn, .nav-cta{
+/* .btn, .nav-cta{
   position:relative;
   overflow:hidden;
   isolation:isolate;
@@ -82,7 +82,7 @@
   z-index:1;
   pointer-events:none;
 }
-.btn:hover::before, .nav-cta:hover::before{ left:130%; }
+.btn:hover::before, .nav-cta:hover::before{ left:130%; } */
 
 /* ---------- 4. Image reveal mask ----------
    Add class="img-reveal" to any .frame / .visual wrapper that
